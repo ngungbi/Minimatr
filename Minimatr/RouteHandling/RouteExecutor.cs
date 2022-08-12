@@ -7,8 +7,7 @@ namespace Minimatr.RouteHandling;
 internal class RouteExecutor {
     private readonly Type _type;
     private readonly EndpointRouteHandler _handler;
-
-
+    
     internal RouteExecutor(Type type, IEnumerable<RouteHandlerFilterAttribute> filters) {
         _type = type;
         var action = new EndpointRouteHandler(EndpointHandler);
@@ -40,7 +39,6 @@ internal class RouteExecutor {
             request = await httpContext.BindToAsync(_type);
         }
 
-        // var request = context.HttpContext.Items[_type]!; // await httpContext.BindTo(_type);
         return await sender.Send(request, httpContext.RequestAborted);
     }
 }
