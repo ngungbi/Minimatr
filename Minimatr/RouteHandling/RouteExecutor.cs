@@ -26,6 +26,10 @@ internal class RouteExecutor {
         var result = await _handler.Invoke(routeContext);
         if (result is IResult finalResult) {
             await finalResult.ExecuteAsync(context);
+        } else if (result is null) {
+            await Results.NoContent().ExecuteAsync(context);
+        } else {
+            await Results.Ok(result).ExecuteAsync(context);
         }
     }
 

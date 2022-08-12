@@ -1,11 +1,15 @@
 # Minimatr - Minimal API with MediatR
 
-Create a clean architecture in dotnet minimal API using MediatR.
+Create a clean and simple architecture of .Net minimal API using MediatR.
+
+## Dependencies
+- .NET 6
+- MediatR
 
 ## Features
-
 - Simple implementation
 - OpenAPI documentation support
+- Endpoint filter support
 
 ## Quick Start
 

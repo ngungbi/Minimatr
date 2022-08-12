@@ -4,6 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Authors>Harish Mahatma Putra</Authors>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>473e44ba-b28e-4a81-a6e3-87ab44ec6e63.snk</AssemblyOriginatorKeyFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

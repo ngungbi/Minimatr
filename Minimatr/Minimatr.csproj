@@ -6,6 +6,10 @@
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>473e44ba-b28e-4a81-a6e3-87ab44ec6e63.snk</AssemblyOriginatorKeyFile>
+        <PublicSign>true</PublicSign>
+        <Authors>Harish Mahatma Putra</Authors>
     </PropertyGroup>
 
     <ItemGroup>

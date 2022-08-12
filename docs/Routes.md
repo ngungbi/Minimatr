@@ -1,4 +1,4 @@
-# Supported route method
+# Routing
 
 ## Using `MapMethodAttribute`
 
@@ -39,7 +39,7 @@ Program.cs
 
 ```csharp
 app = builder.Build();
-app.MapPost<CreateUserRequest>();
+app.MapPost<CreateUserRequest>("/user");
 ```
 
 Somewhere in project
