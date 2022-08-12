@@ -146,7 +146,11 @@ public class OpenApiGenerator {
         return responses;
     }
 
-    private static string GetTagName(Type type) {
+    private static string GetTagName(Type type, SchemaGeneratorOptions options) {
+        if (options.GroupNameConvention is not null) {
+            return options.GroupNameConvention(type, options);
+        }
+
         var dot = type.Namespace?.IndexOf('.') ?? -1;
         return dot == -1 ? type.Name : type.Namespace![(dot + 1)..];
     }
@@ -186,7 +190,7 @@ public class OpenApiGenerator {
                 var operation = new OpenApiOperation {
                     Tags = {
                         new OpenApiTag {
-                            Name = GetTagName(type), // type.Name,
+                            Name = GetTagName(type, options), // type.Name,
                         }
                     },
                     Summary = GetSummary(type),

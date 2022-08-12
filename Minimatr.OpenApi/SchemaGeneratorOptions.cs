@@ -78,4 +78,11 @@ public class SchemaGeneratorOptions {
         AddSecurityRequirement(requirement);
         return this;
     }
+
+    public Func<Type, SchemaGeneratorOptions, string>? GroupNameConvention { get; set; }
+
+    public SchemaGeneratorOptions ConfigureGroupName(Func<Type, SchemaGeneratorOptions, string> configure) {
+        GroupNameConvention = configure;
+        return this;
+    }
 }

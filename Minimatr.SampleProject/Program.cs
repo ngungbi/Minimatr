@@ -20,8 +20,10 @@ services.AddMediatR(assembly);
 var app = builder.Build();
 
 app.MapAllRequests();
+
 app.MapOpenApiSchema(
     "/openapi/schema", options => options
+        .ConfigureGroupName((t, o) => $"{t.Namespace}_Test")
         .AddDefaultBearerSchema()
         .AddDefaultSecurityRequirement()
         .SetInfo(
