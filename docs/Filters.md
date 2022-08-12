@@ -1,13 +1,14 @@
 # Filters
 
 Filter can be added using `AddFilterAttribute(Type filterType)`. Filter must implement `IRouteHandlerFilter`.
+Multiple filters can be added to a single request endpoint and will be executed from top to bottom.
 
 ```csharp
 public class ExampleFilter : IRouteHandlerFilter {
     public async ValueTask<object?> InvokeAsync(RouteHandlerInvocationContext context, RouteHandlerFilterDelegate next) {
         // some logic here
         
-        return await next();
+        return await next(context);
     }
 }
 ```
@@ -32,7 +33,7 @@ public class ExampleFilterAttribute : Attribute, IRouteHandlerFilter {
     public async ValueTask<object?> InvokeAsync(RouteHandlerInvocationContext context, RouteHandlerFilterDelegate next) {
         // some logic here
         
-        return await next();
+        return await next(context);
     }
 }
 ```
@@ -60,7 +61,7 @@ public class ExampleFilterAttribute : Attribute, IRouteHandlerFilter {
         
         // some logics here
         
-        return await next();
+        return await next(context);
     }
 }
 ```
