@@ -10,6 +10,9 @@
         <AssemblyOriginatorKeyFile>473e44ba-b28e-4a81-a6e3-87ab44ec6e63.snk</AssemblyOriginatorKeyFile>
         <PublicSign>true</PublicSign>
         <Authors>Harish Mahatma Putra</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/ngungbi/Minimatr</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
