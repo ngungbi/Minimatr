@@ -16,6 +16,8 @@ public class SampleGetRequest : IEndpointRequest {
 
     [DoNotBind]
     public int Unbinded { get; set; }
+
+    public HttpContext HttpContext { get; set; }
 }
 
 public class SampleGetRequestHandler : IEndpointHandler<SampleGetRequest> {

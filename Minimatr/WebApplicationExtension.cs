@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using MediatR;
 using Minimatr.Configuration;
 using Minimatr.Internal;
 using Minimatr.ModelBinding;
@@ -37,10 +38,21 @@ public static class WebApplicationExtension {
             throw new NullReferenceException(nameof(assembly));
         }
 
-        var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
+        var types = new List<Type>();
+
+        foreach (var type in assembly.GetTypes()) {
+            var map = type.GetCustomAttribute<MapMethodAttribute>();
+            if (map is null) continue;
+            if (type.GetInterfaces().Any(item => item == typeof(IEndpointRequest) || item == typeof(IRequest<object>))) {
+                types.Add(type);
+            }
+        }
+
+        // var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
         foreach (var type in types) {
             MapRequest(app, type);
         }
+
 
         return app;
     }
