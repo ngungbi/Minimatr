@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Minimatr.ModelBinding;
 
-public class PropertySetter {
+internal class PropertySetter {
     public string Name { get; set; }
 
     // public Action<object, StringValues> SetValue { get; set; }

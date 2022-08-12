@@ -174,7 +174,8 @@ public static class ModelBinder {
     }
 
     private static void AddToList(string? name, ICollection<PropertySetter> list, PropertyInfo property, ObjectParserCollection parsers) {
-        if (!parsers.TryGetValue(property.PropertyType, out var parser)) {
+        var baseType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        if (!parsers.TryGetValue(baseType, out var parser)) {
             throw new ArgumentException($"No parser found for type {property.PropertyType.FullName}");
         }
 
