@@ -21,8 +21,8 @@ internal class RouteExecutor {
 
     internal async Task Handle(HttpContext context) {
         var routeContext = new DefaultRouteHandlerInvocationContext(context, Array.Empty<object>());
-        var request = context.BindTo(_type);
-        context.Items.TryAdd(_type, request);
+        var request = await context.BindToAsync(_type);
+        context.Items.TryAdd("Request", request);
         var result = await _handler.Invoke(routeContext);
         if (result is IResult finalResult) {
             await finalResult.ExecuteAsync(context);
@@ -32,8 +32,8 @@ internal class RouteExecutor {
     private async ValueTask<object?> EndpointHandler(RouteHandlerInvocationContext context) {
         var httpContext = context.HttpContext;
         var sender = httpContext.RequestServices.GetRequiredService<ISender>();
-        if (!httpContext.Items.TryGetValue(_type, out var request) || request is null) {
-            request = httpContext.BindTo(_type);
+        if (!httpContext.Items.TryGetValue("Request", out var request) || request is null) {
+            request = await httpContext.BindToAsync(_type);
         }
 
         // var request = context.HttpContext.Items[_type]!; // await httpContext.BindTo(_type);

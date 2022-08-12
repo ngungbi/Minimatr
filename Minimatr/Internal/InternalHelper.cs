@@ -11,6 +11,6 @@ internal static class InternalHelper {
     internal static IEnumerable<MapMethodAttribute> GetHttpMethods(MemberInfo type)
         => type.GetCustomAttributes<MapMethodAttribute>();
 
-    internal static void BuildModel(Type type)
-        => ModelBinder.Build(type);
+    // internal static void BuildModel(Type type)
+    //     => ModelBinder.Build(type);
 }

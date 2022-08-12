@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.Reflection;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing.Patterns;
+using Minimatr.Configuration;
 using Minimatr.Internal;
 
 namespace Minimatr.ModelBinding;
@@ -13,13 +15,13 @@ public static class ModelBinder {
             : null;
     }
 
-    internal static async Task<T> BindTo<T>(this HttpContext context) where T : IEndpointRequest {
-        return (T) await BindTo(context, typeof(T));
+    internal static async Task<T> BindToAsync<T>(this HttpContext context) where T : IEndpointRequest {
+        return (T) await BindToAsync(context, typeof(T));
     }
 
-    internal static async Task<object> BindTo(this HttpContext context, Type type) {
+    internal static async Task<object> BindToAsync(this HttpContext context, Type type) {
         if (!ParameterCache.TryGetValue(type, out var parameters)) {
-            Build(type, context.RequestServices.GetService<ObjectParserCollection>());
+            Build(type, context, context.RequestServices.GetService<ObjectParserCollection>());
             parameters = ParameterCache[type];
         }
 
@@ -73,72 +75,112 @@ public static class ModelBinder {
         // throw new NotImplementedException();
     }
 
-    internal static void Build<T>(ObjectParserCollection? parsers = null) => Build(typeof(T), parsers);
+    private static BindFromAttribute? GetInferredBinding(PropertyInfo propertyInfo, RoutePattern pattern) {
+        var propType = propertyInfo.PropertyType;
+        BindFromAttribute? bind = null;
+        if (propType == typeof(string) || propType.IsValueType || propType.IsPrimitive || propType.IsEnum) {
+            // implicit binding declaration
+            foreach (var parameter in pattern.Parameters) {
+                if (!string.Equals(parameter.Name, propertyInfo.Name, StringComparison.OrdinalIgnoreCase)) continue;
+                bind = new FromRouteAttribute(parameter.Name);
+                break;
+            }
 
-    internal static void Build(Type type, ObjectParserCollection? parsers = null) {
+            bind ??= new BindFromAttribute(BindingSource.Query);
+        }
+
+        return bind;
+    }
+
+    // internal static void Build<T>(ObjectParserCollection? parsers = null) => Build(typeof(T), parsers);
+    // internal static void Build(Type type, ObjectParserCollection? parsers = null) => Build(type, null, parsers);
+
+    internal static void Build(Type type, HttpContext? context, ObjectParserCollection? parsers = null) {
+        Debug.Assert(parsers != null);
+        Debug.Assert(context != null);
         var parameters = new RequestParameter();
         var properties = type.GetProperties();
+        var endpoint = context.GetEndpoint() as RouteEndpoint;
+        var config = context.RequestServices.GetRequiredService<MinimatrConfiguration>();
         foreach (var property in properties) {
-            if (TryAddProperty<FromQueryAttribute>(parameters.Queries, property, parsers)) {
-                // parameters.HasQueryParameters = true;
-                continue;
-            }
-
-            if (TryAddProperty<FromRouteAttribute>(parameters.Routes, property, parsers)) {
-                // parameters.HasRouteParameters = true;
-                continue;
-            }
-
-            if (TryAddProperty<FromFormAttribute>(parameters.Forms, property, parsers)) {
-                // parameters.ExpectFormBody = true;
-                continue;
-            }
-
-            if (TryAddProperty<FromHeaderAttribute>(parameters.Headers, property, parsers)) {
-                // parameters.HasHeaderParameters = true;
+            var bind = property.GetCustomAttribute<BindFromAttribute>();
+            if (bind is null) {
+                if (!config.EnableInferredBinding) continue;
+                bind = GetInferredBinding(property, endpoint?.RoutePattern!);
+            } else if (bind.Source == BindingSource.None) {
                 continue;
             }
 
             var propType = property.PropertyType;
-
-            if (propType == typeof(HttpContext)) {
-                parameters.HttpContext = property;
-                continue;
+            switch (bind?.Source) {
+                case BindingSource.Route:
+                    AddToList(bind.Name, parameters.Routes, property, parsers);
+                    break;
+                case BindingSource.Query:
+                    AddToList(bind.Name, parameters.Queries, property, parsers);
+                    break;
+                case BindingSource.Form:
+                    parameters.ExpectFormBody = true;
+                    AddToList(bind.Name, parameters.Forms, property, parsers);
+                    break;
+                case BindingSource.Header:
+                    AddToList(bind.Name, parameters.Headers, property, parsers);
+                    break;
             }
 
-            if (propType == typeof(HttpRequest)) {
-                parameters.HttpRequest = property;
-                continue;
-            }
 
-            if (propType == typeof(HttpResponse)) {
-                parameters.HttpResponse = property;
-                continue;
-            }
+            if (IsHttpContext(property, parameters)) continue;
 
-            if (property.GetCustomAttribute<FromBodyAttribute>() != null) { //propType.IsClass || (propType.IsValueType && !propType.IsPrimitive && !propType.IsEnum)) {
-                // if (parameters.Body is not null) throw new ArgumentException("Multiple request body model found");
+            // if (property.GetCustomAttribute<FromFormAttribute>() != null) {
+            //     // if (parameters.Body is not null) throw new ArgumentException("Multiple request body model found");
+            // } else 
+            if (property.GetCustomAttribute<FromBodyAttribute>() != null) {
                 var propInterfaces = property.PropertyType.GetInterfaces();
 
-                if (propInterfaces.Contains(typeof(IFormFileCollection))) {
+                if (propType == typeof(IFormFileCollection) || propInterfaces.Contains(typeof(IFormFileCollection))) {
                     parameters.ExpectFormFileCollection = true;
                     parameters.FormFile = property;
-                    // parameters.Files.Add(property);
-                    continue;
-                }
-
-                if (propInterfaces.Contains(typeof(IFormFile))) {
+                } else if (propType == typeof(IFormFile) || propInterfaces.Contains(typeof(IFormFile))) {
                     parameters.ExpectFormFile = true;
                     parameters.FormFile = property;
-                    // parameters.Files.Add(property);
-                    continue;
+                } else {
+                    parameters.ExpectJsonBody = true;
+                    parameters.Bodies.Add(property); //.Body = property;
                 }
-
-                parameters.Bodies.Add(property); //.Body = property;
             }
         }
 
         ParameterCache.Add(type, parameters);
+    }
+
+    private static bool IsHttpContext(PropertyInfo property, RequestParameter parameters) {
+        var propType = property.PropertyType;
+        if (propType == typeof(HttpContext)) {
+            parameters.HttpContext = property;
+            return true;
+        }
+
+        if (propType == typeof(HttpRequest)) {
+            parameters.HttpRequest = property;
+            return true;
+        }
+
+        if (propType == typeof(HttpResponse)) {
+            parameters.HttpResponse = property;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void AddToList(string? name, ICollection<PropertySetter> list, PropertyInfo property, ObjectParserCollection parsers) {
+        if (!parsers.TryGetValue(property.PropertyType, out var parser)) {
+            throw new ArgumentException($"No parser found for type {property.PropertyType.FullName}");
+        }
+
+        list.Add(new PropertySetter(name ?? property.Name, new DefaultObjectSetter(property, parser)));
+        // var parser = parsers?.GetValue(property.PropertyType);
+        // if (parser is null) return;
     }
 
     internal static bool TryAddProperty<TAttr>(ICollection<PropertySetter> list, PropertyInfo property, ObjectParserCollection? parsers = null) where TAttr : Attribute, IModelNameProvider {
@@ -165,6 +207,9 @@ public static class ModelBinder {
     // }
 
     internal static void AddDefaultParsers(ObjectParserCollection collection) {
+        collection.TryAdd(typeof(string), input => input.ToString());
+        collection.TryAdd(typeof(string[]), input => input.ToArray());
+        collection.TryAdd(typeof(IEnumerable<string>), input => input.ToArray());
         collection.TryAdd(typeof(int), input => int.TryParse(input, out var result) ? result : default);
         collection.TryAdd(typeof(long), input => long.TryParse(input, out var result) ? result : default);
         collection.TryAdd(typeof(bool), input => bool.TryParse(input, out var result) ? result : default);

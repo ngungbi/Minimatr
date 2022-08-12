@@ -16,4 +16,8 @@
       <ProjectReference Include="..\Minimatr\Minimatr.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Extensions" />
+    </ItemGroup>
+
 </Project>

@@ -1,16 +1,21 @@
-// using Minimatr.ModelBinding;
+using Minimatr.ModelBinding;
 
-using Microsoft.AspNetCore.Mvc;
+// using Microsoft.AspNetCore.Mvc;
 
 namespace Minimatr.SampleProject.Handlers;
 
-[MapGet("/test/{RouteString}")]
+[MapGet("/test/{SampleString}/{RouteInt:int}")]
 public class SampleGetRequest : IEndpointRequest {
-    [FromRoute(Name = "RouteString")]
+    // [FromRoute(Name = "RouteString")]
     public string SampleString { get; set; } = string.Empty;
 
-    [FromQuery]
+    // [FromQuery]
     public int IntegerValue { get; set; }
+    
+    public int RouteInt { get; set; }
+
+    [DoNotBind]
+    public int Unbinded { get; set; }
 }
 
 public class SampleGetRequestHandler : IEndpointHandler<SampleGetRequest> {

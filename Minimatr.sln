@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.SampleProject", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.OpenApi", "Minimatr.OpenApi\Minimatr.OpenApi.csproj", "{1FCE2BE1-072E-4F10-B316-B04CCF67625F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{467DA521-5C49-4001-ACCE-8E2FFFA0329D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Tests", "Minimatr.Tests\Minimatr.Tests.csproj", "{467DA521-5C49-4001-ACCE-8E2FFFA0329D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
