@@ -1,6 +1,9 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Routing.Patterns;
+using Microsoft.Extensions.Options;
 using Minimatr.Configuration;
 using Minimatr.Internal;
 
@@ -45,8 +48,9 @@ public static class ModelBinder {
         }
 
         if (parameters.ExpectJsonBody && context.Request.HasJsonContentType()) {
+            var jsonOptions = context.RequestServices.GetService<IOptions<JsonOptions>>();
             foreach (var item in parameters.Bodies) {
-                var body = await context.Request.ReadFromJsonAsync(item.PropertyType);
+                var body = await context.Request.ReadFromJsonAsync(item.PropertyType, jsonOptions?.Value.SerializerOptions);
                 item.SetValue(target, body);
             }
             // context.Request.Form.Files
