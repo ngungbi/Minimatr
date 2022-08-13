@@ -41,11 +41,13 @@ public static class WebApplicationExtension {
         var types = new List<Type>();
 
         foreach (var type in assembly.GetTypes()) {
-            var map = type.GetCustomAttribute<MapMethodAttribute>();
-            if (map is null) continue;
+            var maps = type.GetCustomAttributes<MapMethodAttribute>();
+            if (!maps.Any()) continue;
+            // foreach (var _ in maps) {
             if (type.GetInterfaces().Any(item => item == typeof(IEndpointRequest) || item == typeof(IRequest<object>))) {
                 types.Add(type);
             }
+            // }
         }
 
         // var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
