@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+      <PackageReference Include="Ngb.DateTime" Version="1.0.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
