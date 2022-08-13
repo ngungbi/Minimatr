@@ -5,6 +5,7 @@ using Minimatr.ModelBinding;
 namespace Minimatr.SampleProject.Handlers;
 
 [MapGet("/test/{SampleString}/{RouteInt:int}")]
+[MapGet("/test")]
 public class SampleGetRequest : IEndpointRequest {
     // [FromRoute(Name = "RouteString")]
     public string SampleString { get; set; } = string.Empty;

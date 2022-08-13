@@ -375,6 +375,7 @@ public class OpenApiGenerator {
             var propSchema = new OpenApiSchema {
                 Type = GetOpenApiType(propType),
                 Format = GetOpenApiFormat(propType),
+                Pattern = GetOpenApiPattern(propType),
                 Nullable = Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null,
                 Example = example is null ? null : new OpenApiString(example)
             };
@@ -399,6 +400,7 @@ public class OpenApiGenerator {
             var propSchema = new OpenApiSchema {
                 Type = GetOpenApiType(propType),
                 Format = GetOpenApiFormat(propType),
+                Pattern = GetOpenApiPattern(propType),
                 Nullable = !required, // Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null,
                 Example = example is null ? null : new OpenApiString(example),
             };
@@ -439,8 +441,11 @@ public class OpenApiGenerator {
 
     private static string GetOpenApiType(Type type) {
         if (type == typeof(int) || type == typeof(short) || type == typeof(long) ||
-            type == typeof(uint) || type == typeof(ushort) || type == typeof(ulong)) return "integer";
-        if (type == typeof(float) || type == typeof(double)) return "number";
+            type == typeof(uint) || type == typeof(ushort) || type == typeof(ulong) ||
+            type == typeof(sbyte) || type == typeof(byte)) return "integer";
+        if (type == typeof(float) || type == typeof(double) || type == typeof(decimal)) return "number";
+        if (type.GetCustomAttribute<EmailAddressAttribute>() != null) return "email";
+        // if (type == typeof(TimeOnly) || type == typeof(TimeSpan)) return "pattern";
         // if (type == typeof(Guid)) return "string";
         // if (type == typeof(DateTime) || type == typeof(DateTimeOffset)) return "string";
         // if (type == typeof(DateOnly)) return "string";
@@ -450,6 +455,12 @@ public class OpenApiGenerator {
         // if (type == typeof(b)) return "boolean";
 
         return "string"; // type.Name.ToLower();
+    }
+
+    private static string? GetOpenApiPattern(Type type) {
+        if (type == typeof(TimeOnly) || type == typeof(TimeSpan)) return "00:00:00";
+        if (type == typeof(byte[])) return Convert.ToBase64String(new byte[] {00, 00, 00, 00, 00});
+        return null;
     }
 
     private static string GetOpenApiFormat(Type type) {
@@ -463,11 +474,14 @@ public class OpenApiGenerator {
         if (type == typeof(double)) return "double";
         if (type == typeof(decimal)) return "decimal";
         if (type == typeof(bool)) return "boolean";
-        if (type == typeof(DateTime)) return "date";
+        if (type == typeof(DateTime)) return "date-time";
+        if (type == typeof(DateOnly)) return "date";
+        if (type == typeof(TimeOnly)) return "^asd$";
         if (type == typeof(DateTimeOffset)) return "date-time";
         if (type == typeof(TimeSpan)) return "duration";
         if (type == typeof(Guid)) return "uuid";
         if (type == typeof(string)) return "string";
+        if (type == typeof(byte) || type == typeof(sbyte)) return "int32";
         if (type == typeof(byte[])) return "byte";
         if (type == typeof(IFormFile) || type.GetInterfaces().Contains(typeof(IFormFile))) return "binary";
         return "string";
