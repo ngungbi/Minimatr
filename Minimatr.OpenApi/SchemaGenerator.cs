@@ -468,8 +468,8 @@ public class OpenApiGenerator {
         if (type == typeof(uint)) return "uint32";
         if (type == typeof(short)) return "int16";
         if (type == typeof(ushort)) return "uint16";
-        if (type == typeof(long)) return "int64";
-        if (type == typeof(ulong)) return "uint64";
+        if (type == typeof(long)) return "int32";
+        if (type == typeof(ulong)) return "uint32";
         if (type == typeof(float)) return "float";
         if (type == typeof(double)) return "double";
         if (type == typeof(decimal)) return "decimal";

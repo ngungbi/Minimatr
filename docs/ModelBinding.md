@@ -8,7 +8,9 @@ If the parameter was found at the route pattern, then it will be assumed the par
 the parameter is coming from query string.
 It is recommended to add bind attribute to avoid confusion and unexpected behavior.
 
-Example :
+> **Important tip:** do not use `Microsoft.AspNetCore.Mvc` namespace.
+
+**Example :**
 
 ```csharp
 [MapGet("/oauth/{tenantId}/authorize")]
@@ -28,7 +30,7 @@ public class AuthorizeRequest : IEndpointRequest {
 
 public class AuthorizeHandler : IEndpointHandler {
     public async Task<IResult> Handle(AuthorizeRequest request, CancellationToken cancellationToken) {
-        // some logic here
+        // some logics here
         
         return Results.Ok();
     }
@@ -51,12 +53,20 @@ public class SampleRequest : IEndpointRequest {
 
 ## FormFile
 
-When property type is `IFormFile` with `FromBody` attribute, it will bind automatically with first File from `HttpRequest`
+When property type is `IFormFile` with `FromBody` attribute, it will bind automatically with first `File` from `HttpRequest`
 
 ```csharp
 [MapPost("/upload")]
 public class UploadFileRequest : IEndpointRequest {
     [FromBody]
     public IFormFile UploadedFile { get; set; }
+}
+```
+Or `IFormFIleCollection` for multiple files.
+```csharp
+[MapPost("/batchupload")]
+public class UploadFileRequest : IEndpointRequest {
+    [FromBody]
+    public IFormFileCollection UploadedFiles { get; set; }
 }
 ```

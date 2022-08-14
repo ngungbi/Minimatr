@@ -48,3 +48,5 @@ public class SampleGetRequestHandler : IEndpointHandler<SampleGetRequest> {
     }
 }
 ```
+## Quick Tip
+Do not let your IDE to add `Microsoft.AspNetCore.Mvc` namespace.
