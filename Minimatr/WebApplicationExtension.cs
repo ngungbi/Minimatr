@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Minimatr.Configuration;
 using Minimatr.Internal;
 using Minimatr.ModelBinding;
@@ -15,7 +16,7 @@ public static class WebApplicationExtension {
         // ModelBinder.Build(type);
         var filters = InternalHelper.GetFilters(type);
         var handler = new RouteExecutor(type, filters);
-        foreach (var item in InternalHelper.GetHttpMethods(type)) {
+        foreach (var item in InternalHelper.GetMapMethods(type)) {
             app.MapMethods(item.Template, item.SupportedMethods, handler.Handle);
         }
 
@@ -32,7 +33,7 @@ public static class WebApplicationExtension {
 
 
     public static WebApplication MapAllRequests(this WebApplication app, Assembly? assembly = null) {
-        var config = app.Services.GetRequiredService<MinimatrConfiguration>();
+        var config = app.Services.GetRequiredService<IOptions<MinimatrConfiguration>>().Value;
         assembly ??= config.Assembly;
         if (assembly is null) {
             throw new NullReferenceException(nameof(assembly));

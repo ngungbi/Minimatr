@@ -12,11 +12,11 @@ internal class RequestParameter {
     internal bool ExpectFormBody { get; set; }
     internal bool ExpectJsonBody { get; set; }
 
-    internal List<PropertySetter> Routes { get; } = new();
-    internal List<PropertySetter> Queries { get; } = new();
-    internal List<PropertySetter> Headers { get; } = new();
+    internal PropertySetterCollection Routes { get; } = new();
+    internal PropertySetterCollection Queries { get; } = new();
+    internal PropertySetterCollection Headers { get; } = new();
 
-    internal List<PropertySetter> Forms { get; } = new();
+    internal PropertySetterCollection Forms { get; } = new();
 
     // internal List<PropertyInfo> Files { get; set; } = new();
     internal List<PropertyInfo> Bodies { get; set; } = new();

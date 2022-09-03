@@ -7,27 +7,29 @@ internal class PropertySetter {
     public string Name { get; set; }
 
     // public Action<object, StringValues> SetValue { get; set; }
-    public ObjectSetter Setter { get; set; }
-
-
+    // public ObjectSetter Setter { get; set; }
+    internal Action<object, StringValues> SetValue { get; }
+    
     public PropertySetter(PropertyInfo propertyInfo, string? name = null) {
         Name = name ?? propertyInfo.Name;
 
         if (IsStringEnumerable(propertyInfo.PropertyType)) {
-            Setter = new StringsSetter(propertyInfo);
+            // Setter = new StringsSetter(propertyInfo);
+            SetValue = new StringsSetter(propertyInfo).SetValue;
             return;
         }
 
         var type = GetBaseType(propertyInfo.PropertyType);
-        Setter = GetSetter(type, propertyInfo);
+        // Setter = GetSetter(type, propertyInfo);
+        SetValue = GetSetter(type, propertyInfo).SetValue;
     }
 
     public PropertySetter(string name, ObjectSetter setter) {
         Name = name;
-        Setter = setter;
+        // Setter = setter;
+        SetValue = setter.SetValue;
     }
-
-
+    
     private static ObjectSetter GetSetter(Type type, PropertyInfo propertyInfo) {
         if (type == typeof(string)) {
             return new StringSetter(propertyInfo); // (obj, value) => propertyInfo.SetValue(obj, value.ToString());
@@ -40,22 +42,22 @@ internal class PropertySetter {
 
         if (type.IsEnum) return new EnumSetter(propertyInfo, type); // (obj, value) => EnumSetter(obj, value, type, propertyInfo);
 
-        if (type == typeof(int)) return new Int32Setter(propertyInfo); //(obj, value) => Int32Setter(obj, value, propertyInfo);
-        if (type == typeof(long)) return new Int64Setter(propertyInfo); //(obj, value) => Int64Setter(obj, value, propertyInfo);
-        if (type == typeof(bool)) return new BooleanSetter(propertyInfo); //(obj, value) => BooleanSetter(obj, value, propertyInfo);
-        if (type == typeof(double)) return new DoubleSetter(propertyInfo); //(obj, value) => DoubleSetter(obj, value, propertyInfo);
-        if (type == typeof(float)) return new FloatSetter(propertyInfo); //(obj, value) => SingleSetter(obj, value, propertyInfo);
-        if (type == typeof(decimal)) return new DecimalSetter(propertyInfo); //(obj, value) => DecimalSetter(obj, value, propertyInfo);
-        if (type == typeof(DateTime)) return new DateTimeSetter(propertyInfo); //(obj, value) => DateTimeSetter(obj, value, propertyInfo);
-        if (type == typeof(TimeSpan)) return new TimeSpanSetter(propertyInfo); //(obj, value) => TimeSpanSetter(obj, value, propertyInfo);
-        if (type == typeof(Guid)) return new GuidSetter(propertyInfo); //(obj, value) => GuidSetter(obj, value, propertyInfo);
-        if (type == typeof(byte)) return new ByteSetter(propertyInfo); //(obj, value) => ByteSetter(obj, value, propertyInfo);
-        if (type == typeof(sbyte)) return new SByteSetter(propertyInfo); //(obj, value) => SByteSetter(obj, value, propertyInfo);
-        if (type == typeof(short)) return new Int16Setter(propertyInfo); //(obj, value) => Int16Setter(obj, value, propertyInfo);
-        if (type == typeof(ushort)) return new UInt16Setter(propertyInfo); //(obj, value) => UInt16Setter(obj, value, propertyInfo);
-        if (type == typeof(uint)) return new UInt32Setter(propertyInfo); //(obj, value) => UInt32Setter(obj, value, propertyInfo);
-        if (type == typeof(ulong)) return new UInt64Setter(propertyInfo); //(obj, value) => UInt64Setter(obj, value, propertyInfo);
-        if (type == typeof(char)) return new CharSetter(propertyInfo); //(obj, value) => CharSetter(obj, value, propertyInfo);
+        if (type == typeof(int)) return new ObjectSetter<int>(propertyInfo, int.TryParse); //(obj, value) => Int32Setter(obj, value, propertyInfo);
+        if (type == typeof(long)) return new ObjectSetter<long>(propertyInfo, long.TryParse); //(obj, value) => Int64Setter(obj, value, propertyInfo);
+        if (type == typeof(bool)) return new ObjectSetter<bool>(propertyInfo, bool.TryParse); //(obj, value) => BooleanSetter(obj, value, propertyInfo);
+        if (type == typeof(double)) return new ObjectSetter<double>(propertyInfo, double.TryParse); //(obj, value) => DoubleSetter(obj, value, propertyInfo);
+        if (type == typeof(float)) return new ObjectSetter<float>(propertyInfo, float.TryParse); //(obj, value) => SingleSetter(obj, value, propertyInfo);
+        if (type == typeof(decimal)) return new ObjectSetter<decimal>(propertyInfo, decimal.TryParse); //(obj, value) => DecimalSetter(obj, value, propertyInfo);
+        if (type == typeof(DateTime)) return new ObjectSetter<DateTime>(propertyInfo, DateTime.TryParse); //(obj, value) => DateTimeSetter(obj, value, propertyInfo);
+        if (type == typeof(TimeSpan)) return new ObjectSetter<TimeSpan>(propertyInfo, TimeSpan.TryParse); //(obj, value) => TimeSpanSetter(obj, value, propertyInfo);
+        if (type == typeof(Guid)) return new ObjectSetter<Guid>(propertyInfo, Guid.TryParse); //(obj, value) => GuidSetter(obj, value, propertyInfo);
+        if (type == typeof(byte)) return new ObjectSetter<byte>(propertyInfo, byte.TryParse); //(obj, value) => ByteSetter(obj, value, propertyInfo);
+        if (type == typeof(sbyte)) return new ObjectSetter<sbyte>(propertyInfo, sbyte.TryParse); //(obj, value) => SByteSetter(obj, value, propertyInfo);
+        if (type == typeof(short)) return new ObjectSetter<short>(propertyInfo, short.TryParse); //(obj, value) => Int16Setter(obj, value, propertyInfo);
+        if (type == typeof(ushort)) return new ObjectSetter<ushort>(propertyInfo, ushort.TryParse); //(obj, value) => UInt16Setter(obj, value, propertyInfo);
+        if (type == typeof(uint)) return new ObjectSetter<uint>(propertyInfo, uint.TryParse); //(obj, value) => UInt32Setter(obj, value, propertyInfo);
+        if (type == typeof(ulong)) return new ObjectSetter<ulong>(propertyInfo, ulong.TryParse); //(obj, value) => UInt64Setter(obj, value, propertyInfo);
+        if (type == typeof(char)) return new ObjectSetter<char>(propertyInfo, char.TryParse); //(obj, value) => CharSetter(obj, value, propertyInfo);
 
         var parser = GetParser(type);
         if (parser is null) {

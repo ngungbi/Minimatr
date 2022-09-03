@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.OpenApi", "Minimat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Tests", "Minimatr.Tests\Minimatr.Tests.csproj", "{467DA521-5C49-4001-ACCE-8E2FFFA0329D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Extensions.Microsoft.DependencyInjection", "Minimatr.Extensions.Microsoft.DependencyInjection\Minimatr.Extensions.Microsoft.DependencyInjection.csproj", "{28D9DAD4-40EC-4B6E-803A-F81660FA815F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{467DA521-5C49-4001-ACCE-8E2FFFA0329D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{467DA521-5C49-4001-ACCE-8E2FFFA0329D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{467DA521-5C49-4001-ACCE-8E2FFFA0329D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

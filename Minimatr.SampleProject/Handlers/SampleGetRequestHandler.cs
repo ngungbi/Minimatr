@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Minimatr.ModelBinding;
 
 // using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,8 @@ public class SampleGetRequest : IEndpointRequest {
     [DoNotBind]
     public int Unbinded { get; set; }
 
-    public HttpContext HttpContext { get; set; }
+    [JsonIgnore]
+    public HttpContext HttpContext { get; set; } = null!;
 }
 
 public class SampleGetRequestHandler : IEndpointHandler<SampleGetRequest> {

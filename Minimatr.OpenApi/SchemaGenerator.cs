@@ -8,9 +8,11 @@ using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Patterns;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
+using Minimatr.Configuration;
 using Minimatr.Internal;
 using Minimatr.ModelBinding;
 using FromBodyAttribute = Minimatr.ModelBinding.FromBodyAttribute;
@@ -23,10 +25,13 @@ namespace Minimatr.OpenApi;
 public class OpenApiGenerator {
     private readonly Assembly _assembly;
     private readonly XmlDocument _document;
+    private readonly SchemaGeneratorOptions _generatorOptions;
 
-    public OpenApiGenerator(Assembly assembly) {
+    public OpenApiGenerator(IOptions<MinimatrConfiguration> options, IOptions<SchemaGeneratorOptions> generatorOptions) {
+        var assembly = options.Value.Assembly!;
         _assembly = assembly;
         _document = new XmlDocument();
+        _generatorOptions = generatorOptions.Value;
         var xmlPath = Path.Combine(AppContext.BaseDirectory, assembly.GetName().Name + ".xml");
         if (File.Exists(xmlPath))
             _document.Load(xmlPath);
@@ -86,6 +91,7 @@ public class OpenApiGenerator {
     public IDictionary<Type, OpenApiSchema> Schemas => _schema;
 
     private string _generatedDocument = string.Empty;
+    public Task<string> GenerateDocument() => GenerateDocument(_generatorOptions);
 
     public async Task<string> GenerateDocument(SchemaGeneratorOptions options) {
         if (!string.IsNullOrEmpty(_generatedDocument)) return _generatedDocument;
