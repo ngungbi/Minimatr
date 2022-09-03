@@ -35,15 +35,16 @@ public static class ServiceCollectionExtension {
         return AddMinimatrParsers(services, configureParsers);
     }
 
-    public static IServiceCollection AddMinimatr(this IServiceCollection services, Assembly assembly, Action<MinimatrConfiguration>? configure = null,
+    public static IServiceCollection AddMinimatr(this IServiceCollection services, Assembly assembly,
+        Action<MinimatrConfiguration>? configure = null,
         Action<ObjectParserCollection>? configureParsers = null) {
-        if (services.FirstOrDefault(d => d.ServiceType == typeof(MinimatrConfiguration))?.ImplementationInstance is not MinimatrConfiguration config) {
-            config = new MinimatrConfiguration();
-            // services.Configure(configure);
-            services.AddSingleton(config);
-            // var options = Options.Create(config);
-            // services.AddSingleton(options);
-        }
+        // if (services.FirstOrDefault(d => d.ServiceType == typeof(MinimatrConfiguration))?.ImplementationInstance is not MinimatrConfiguration config) {
+        //     config = new MinimatrConfiguration();
+        //     // services.Configure(configure);
+        //     services.AddSingleton(config);
+        //     // var options = Options.Create(config);
+        //     // services.AddSingleton(options);
+        // }
 
         // config.Assembly ??= assembly;
         services.Configure<MinimatrConfiguration>(

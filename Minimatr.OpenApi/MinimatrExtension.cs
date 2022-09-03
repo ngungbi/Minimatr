@@ -29,8 +29,13 @@ public static class MinimatrExtension {
         return services;
     }
 
-    public static IServiceCollection AddMinimatrSchemaGenerator(this IServiceCollection services, Assembly? assembly, Action<SchemaGeneratorOptions>? configure = null)
-        => AddMinimatrSchemaGenerator(services, configure);
+    public static IServiceCollection AddMinimatrSchemaGenerator(this IServiceCollection services, Assembly? assembly, Action<SchemaGeneratorOptions>? configure = null) {
+        if (assembly != null) {
+            services.Configure<MinimatrConfiguration>(x => x.Assembly ??= assembly);
+        }
+
+        return AddMinimatrSchemaGenerator(services, configure);
+    }
     // {
     //     // if (assembly is null) {
     //     //     // var config = services.First(x => x.ServiceType == typeof(MinimatrConfiguration)).ImplementationInstance as MinimatrConfiguration;

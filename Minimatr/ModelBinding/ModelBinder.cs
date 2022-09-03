@@ -30,7 +30,7 @@ public static class ModelBinder {
 
     internal static Task<object> BindToAsync(this HttpContext context, Type type) {
         var target = Activator.CreateInstance(type);
-        if (target is null) throw new NullReferenceException($"Failed to create instance of type {type.FullName}");
+        if (target is null) throw new InvalidOperationException($"Failed to create instance of type {type.FullName}");
         return BindToAsync(context, type, target);
     }
 
