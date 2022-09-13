@@ -9,8 +9,10 @@ using Minimatr.Internal;
 
 namespace Minimatr.ModelBinding;
 
+internal sealed class ParameterDictionary : TypeObjectDictionary<RequestParameter> { }
+
 public static class ModelBinder {
-    private static readonly TypeObjectDictionary<RequestParameter> ParameterCache = new();
+    private static readonly ParameterDictionary ParameterCache = new();
     private static JsonSerializerOptions? _jsonSerializerOptions;
 
     internal static RequestParameter? GetRequestParameter(Type type) {
