@@ -1,6 +1,6 @@
 namespace Minimatr.RouteHandling.Filter;
 
-internal class DefaultRouteHandlerInvocationContext : RouteHandlerInvocationContext {
+internal sealed class DefaultRouteHandlerInvocationContext : RouteHandlerInvocationContext {
     public override IList<object?> Arguments { get; }
     public override HttpContext HttpContext { get; }
 

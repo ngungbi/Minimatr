@@ -3,7 +3,7 @@ using Minimatr.ModelBinding;
 
 namespace Minimatr.Internal;
 
-internal class RequestParameter {
+internal sealed class RequestParameter {
     // internal bool HasQueryParameters { get; set; }
     // internal bool HasRouteParameters { get; set; }
     // internal bool HasHeaderParameters { get; set; }

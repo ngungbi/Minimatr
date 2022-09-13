@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace Minimatr.ModelBinding;
 
-internal class PropertySetterCollection : List<PropertySetter> {
+internal sealed class PropertySetterCollection : List<PropertySetter> {
     public void Add(string? name, PropertyInfo property, ObjectParserCollection parsers) {
         var baseType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
         if (parsers.TryGetValue(baseType, out var parser)) {

@@ -1,5 +1,5 @@
 namespace Minimatr.Extensions; 
 
-public class ServiceRegistrations {
-    
-}
+// public class ServiceRegistrations {
+//     
+// }

@@ -1,6 +1,6 @@
 namespace Minimatr;
 
-public class MapPutAttribute : MapMethodAttribute {
+public sealed class MapPutAttribute : MapMethodAttribute {
     private const string HttpMethod = "PUT";
 
     public MapPutAttribute(string template) : base(HttpMethod, template) { }

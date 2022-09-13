@@ -22,7 +22,7 @@ using FromRouteAttribute = Minimatr.ModelBinding.FromRouteAttribute;
 
 namespace Minimatr.OpenApi;
 
-public class OpenApiGenerator {
+public sealed class OpenApiGenerator {
     private readonly Assembly _assembly;
     private readonly XmlDocument _document;
     private readonly SchemaGeneratorOptions _generatorOptions;

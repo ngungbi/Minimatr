@@ -2,7 +2,7 @@ using Minimatr.RouteHandling.Filter;
 
 namespace Minimatr.RouteHandling;
 
-internal class FilterEndpointRouteHandler : EndpointRouteHandler {
+internal sealed class FilterEndpointRouteHandler : EndpointRouteHandler {
     private readonly RouteHandlerFilterInvokerDelegate _invoker;
 
     internal FilterEndpointRouteHandler(RouteHandlerFilterInvokerDelegate invoker, RouteHandlerFilterDelegate action) : base(action) {

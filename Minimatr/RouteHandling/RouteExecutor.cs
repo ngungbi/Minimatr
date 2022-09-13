@@ -4,7 +4,7 @@ using Minimatr.RouteHandling.Filter;
 
 namespace Minimatr.RouteHandling;
 
-internal class RouteExecutor {
+internal sealed class RouteExecutor {
     private readonly Type _type;
     private readonly EndpointRouteHandler _handler;
     

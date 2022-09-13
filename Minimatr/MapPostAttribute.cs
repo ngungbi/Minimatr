@@ -1,6 +1,6 @@
 namespace Minimatr;
 
-public class MapPostAttribute : MapMethodAttribute {
+public sealed class MapPostAttribute : MapMethodAttribute {
     // private static readonly IEnumerable<string> Methods = new[] {"POST"};
     private const string HttpMethod = "POST";
 

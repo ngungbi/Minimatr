@@ -3,7 +3,7 @@ using Minimatr.RouteHandling.Filter;
 namespace Minimatr;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class AddFilterAttribute : Attribute, IRouteHandlerFilter {
+public sealed class AddFilterAttribute : Attribute, IRouteHandlerFilter {
     private readonly Type _type;
 
     public AddFilterAttribute(Type type) {

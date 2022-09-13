@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Minimatr.OpenApi;
 
-public class SchemaGeneratorOptions {
+public sealed class SchemaGeneratorOptions {
     public SchemaGeneratorOptions(IServiceProvider serviceProvider) {
         ServiceProvider = serviceProvider;
         SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>();

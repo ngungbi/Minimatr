@@ -3,6 +3,6 @@ using Minimatr.Internal;
 
 namespace Minimatr.ModelBinding;
 
-public class ObjectParserCollection : TypeObjectDictionary<ObjectParserDelegate> {
+public sealed class ObjectParserCollection : TypeObjectDictionary<ObjectParserDelegate> {
     
 }

@@ -27,7 +27,7 @@ internal abstract class ObjectSetter {
 
 // internal delegate T ObjectParserDelegate<out T>(StringValues input);
 
-internal class DefaultObjectSetter : ObjectSetter {
+internal sealed class DefaultObjectSetter : ObjectSetter {
     private readonly ObjectParserDelegate _parser;
     public DefaultObjectSetter(PropertyInfo propertyInfo, ObjectParserDelegate parser) : base(propertyInfo) { _parser = parser; }
 
@@ -37,19 +37,19 @@ internal class DefaultObjectSetter : ObjectSetter {
     }
 }
 
-internal class StringSetter : ObjectSetter {
+internal sealed class StringSetter : ObjectSetter {
     public StringSetter(PropertyInfo propertyInfo) : base(propertyInfo) { }
 
     public override void SetValue(object obj, StringValues value) => Setter(obj, value.ToString());
 }
 
-internal class StringsSetter : ObjectSetter {
+internal sealed class StringsSetter : ObjectSetter {
     public StringsSetter(PropertyInfo propertyInfo) : base(propertyInfo) { }
 
     public override void SetValue(object obj, StringValues value) => Setter(obj, value.ToArray());
 }
 
-internal class EnumSetter : ObjectSetter {
+internal sealed class EnumSetter : ObjectSetter {
     private readonly Type _type;
     public EnumSetter(PropertyInfo propertyInfo, Type type) : base(propertyInfo) { _type = type; }
 
@@ -60,7 +60,7 @@ internal class EnumSetter : ObjectSetter {
     }
 }
 
-internal class ObjectSetter<T> : ObjectSetter {
+internal sealed class ObjectSetter<T> : ObjectSetter {
     private readonly GenericSetterDelegate<T> _parser;
 
     public ObjectSetter(PropertyInfo propertyInfo, GenericSetterDelegate<T> parser) : base(propertyInfo) {
@@ -77,7 +77,7 @@ internal class ObjectSetter<T> : ObjectSetter {
     }
 }
 
-internal class ParseableSetter : ObjectSetter {
+internal sealed class ParseableSetter : ObjectSetter {
     private readonly MethodInfo _parser;
 
     public ParseableSetter(PropertyInfo propertyInfo, MethodInfo parser) : base(propertyInfo) {
