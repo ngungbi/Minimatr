@@ -10,7 +10,7 @@ public sealed class SchemaGeneratorOptions {
     }
 
     public IServiceProvider ServiceProvider { get; }
-    public OpenApiInfo Info { get; set; } = new();
+    public OpenApiInfo Info { get; set; } = new(){ Title = "", Version = ""};
     public IDictionary<string, OpenApiSecurityScheme> SecuritySchemes { get; set; }
     public IList<OpenApiSecurityRequirement> SecurityRequirements { get; set; }
 
