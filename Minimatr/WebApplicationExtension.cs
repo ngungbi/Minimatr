@@ -31,7 +31,13 @@ public static class WebApplicationExtension {
         return app;
     }
 
-
+    /// <summary>
+    /// Scan and map the entire assembly for <see cref="MapMethodAttribute"/> and <see cref="IEndpointRequest"/>.
+    /// </summary>
+    /// <param name="app">Web application</param>
+    /// <param name="assembly">Assembly to scan. When null, will try to resolve from <see cref="MinimatrConfiguration"/>.</param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException"></exception>
     public static WebApplication MapAllRequests(this WebApplication app, Assembly? assembly = null) {
         var config = app.Services.GetRequiredService<IOptions<MinimatrConfiguration>>().Value;
         assembly ??= config.Assembly;
@@ -53,6 +59,7 @@ public static class WebApplicationExtension {
 
         // var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
         foreach (var type in types) {
+            // ModelBinder.Build(type);
             MapRequest(app, type);
         }
 

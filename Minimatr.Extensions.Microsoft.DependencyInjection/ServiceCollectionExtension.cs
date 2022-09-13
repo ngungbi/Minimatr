@@ -4,6 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Minimatr.Extensions.Microsoft.DependencyInjection;
 
 public static class ServiceCollectionExtension {
+    /// <summary>
+    /// Register all marked classes to a service collection. This operation will scan the entire assmbly for <see cref="ServiceAttribute"/>.
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="assembly">Assembly to scan</param>
+    /// <returns></returns>
     public static IServiceCollection AddRequiredServices(this IServiceCollection services, Assembly assembly) {
         var types = assembly.GetTypes();
         foreach (var item in types) {

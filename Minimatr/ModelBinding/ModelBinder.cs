@@ -114,7 +114,7 @@ public static class ModelBinder {
     // internal static void Build<T>(ObjectParserCollection? parsers = null) => Build(typeof(T), parsers);
     // internal static void Build(Type type, ObjectParserCollection? parsers = null) => Build(type, null, parsers);
 
-    internal static void Build(Type type, HttpContext? context, ObjectParserCollection? parsers = null) {
+    internal static void Build(Type type, HttpContext context, ObjectParserCollection? parsers = null) {
         Debug.Assert(parsers != null);
         Debug.Assert(context != null);
         var parameters = new RequestParameter();

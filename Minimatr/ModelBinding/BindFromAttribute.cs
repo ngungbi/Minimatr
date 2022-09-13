@@ -1,5 +1,8 @@
 namespace Minimatr.ModelBinding;
 
+/// <summary>
+/// Bind property value to request body.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 public class BindFromAttribute : Attribute, IModelNameProvider {
     public string? Name { get; init; }

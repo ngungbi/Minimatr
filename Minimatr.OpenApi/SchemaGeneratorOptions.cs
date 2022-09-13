@@ -10,20 +10,39 @@ public sealed class SchemaGeneratorOptions {
     }
 
     public IServiceProvider ServiceProvider { get; }
-    public OpenApiInfo Info { get; set; } = new(){ Title = "", Version = ""};
+    
+    /// <summary>
+    /// Get or set value for Open API information
+    /// </summary>
+    public OpenApiInfo Info { get; set; } = new(){ Title = "API Documentation", Version = "v1"};
     public IDictionary<string, OpenApiSecurityScheme> SecuritySchemes { get; set; }
     public IList<OpenApiSecurityRequirement> SecurityRequirements { get; set; }
 
+    /// <summary>
+    /// Set Open API info
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public SchemaGeneratorOptions SetInfo(OpenApiInfo info) {
         Info = info;
         return this;
     }
 
+    /// <summary>
+    /// Configure Open API information
+    /// </summary>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public SchemaGeneratorOptions ConfigureInfo(Action<OpenApiInfo> configure) {
         configure(Info);
         return this;
     }
-
+    
+    /// <summary>
+    /// Configure Open API information with value from service collection
+    /// </summary>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public SchemaGeneratorOptions ConfigureInfo(Action<OpenApiInfo, IServiceProvider> configure) {
         configure(Info, ServiceProvider);
         return this;
@@ -53,6 +72,11 @@ public sealed class SchemaGeneratorOptions {
         return this;
     }
 
+    /// <summary>
+    /// Add bearer authorization schema
+    /// </summary>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public SchemaGeneratorOptions AddDefaultBearerSchema(Action<OpenApiSecurityScheme>? configure = null) {
         var scheme = new OpenApiSecurityScheme {
             In = ParameterLocation.Header,
@@ -65,6 +89,11 @@ public sealed class SchemaGeneratorOptions {
         return this;
     }
 
+    /// <summary>
+    /// Add bearer schema
+    /// </summary>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public SchemaGeneratorOptions AddDefaultSecurityRequirement(Action<OpenApiSecurityRequirement>? configure = null) {
         var requirement = new OpenApiSecurityRequirement {
             {
@@ -81,6 +110,11 @@ public sealed class SchemaGeneratorOptions {
 
     public Func<Type, SchemaGeneratorOptions, string>? GroupNameConvention { get; set; }
 
+    /// <summary>
+    /// Configure custom endpoint grouping
+    /// </summary>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public SchemaGeneratorOptions ConfigureGroupName(Func<Type, SchemaGeneratorOptions, string> configure) {
         GroupNameConvention = configure;
         return this;

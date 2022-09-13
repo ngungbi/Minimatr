@@ -1,5 +1,8 @@
 namespace Minimatr;
 
+/// <summary>
+/// Map request endpoint with DELETE method
+/// </summary>
 public sealed class MapDeleteAttribute : MapMethodAttribute {
     // private static readonly IEnumerable<string> Methods = new[] {"DELETE"};
     private const string HttpMethod = "DELETE";

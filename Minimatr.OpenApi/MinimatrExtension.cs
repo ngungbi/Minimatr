@@ -13,6 +13,12 @@ using Minimatr.Configuration;
 namespace Minimatr.OpenApi;
 
 public static class MinimatrExtension {
+    /// <summary>
+    /// Register schema generator to service collection
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="configuration">Configuration</param>
+    /// <returns></returns>
     public static IServiceCollection AddMinimatrSchemaGenerator(this IServiceCollection services, IConfiguration configuration) {
         services.TryAddSingleton<IOptions<SchemaGeneratorOptions>>(serviceProvider => Options.Create(new SchemaGeneratorOptions(serviceProvider)));
         services.Configure<SchemaGeneratorOptions>(configuration.Bind);
@@ -21,6 +27,12 @@ public static class MinimatrExtension {
         return services;
     }
 
+    /// <summary>
+    /// Register schema generator to service collection
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public static IServiceCollection AddMinimatrSchemaGenerator(this IServiceCollection services, Action<SchemaGeneratorOptions>? configure = null) {
         services.TryAddSingleton<IOptions<SchemaGeneratorOptions>>(serviceProvider => Options.Create(new SchemaGeneratorOptions(serviceProvider)));
         services.Configure<SchemaGeneratorOptions>(options => configure?.Invoke(options));
@@ -29,6 +41,7 @@ public static class MinimatrExtension {
         return services;
     }
 
+    
     public static IServiceCollection AddMinimatrSchemaGenerator(this IServiceCollection services, Assembly? assembly, Action<SchemaGeneratorOptions>? configure = null) {
         if (assembly != null) {
             services.Configure<MinimatrConfiguration>(x => x.Assembly ??= assembly);
@@ -51,6 +64,13 @@ public static class MinimatrExtension {
     //     return services;
     // }
 
+    /// <summary>
+    /// Map endpoint for OpenAPI document
+    /// </summary>
+    /// <param name="app">Web application</param>
+    /// <param name="pattern">Route to document</param>
+    /// <param name="configure">Configure action</param>
+    /// <returns></returns>
     public static WebApplication MapOpenApiSchema(this WebApplication app, string pattern, Action<SchemaGeneratorOptions>? configure = null) {
         var options = app.Services.GetRequiredService<IOptions<SchemaGeneratorOptions>>().Value;
 

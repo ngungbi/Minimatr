@@ -7,20 +7,15 @@ using Minimatr.ModelBinding;
 namespace Minimatr.Extensions;
 
 public static class ServiceCollectionExtension {
-    // public static IServiceCollection AddMinimatr(this IServiceCollection services, Action<MinimatrConfiguration>? configure = null) {
-    //     var config = new MinimatrConfiguration();
-    //     configure?.Invoke(config);
-    //     services.AddSingleton(config);
-    //     return services;
-    // }
+    /// <summary>
+    /// Add MinimatR to a service collection.
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="configure">Configure MinimatR options</param>
+    /// <param name="configureParsers">Register additional parser for custom type</param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException"></exception>
     public static IServiceCollection AddMinimatr(this IServiceCollection services, Action<MinimatrConfiguration> configure, Action<ObjectParserCollection>? configureParsers = null) {
-        // if (services.FirstOrDefault(d => d.ServiceType == typeof(MinimatrConfiguration))?.ImplementationInstance is not MinimatrConfiguration config) {
-        //     config = new MinimatrConfiguration();
-        //     services.AddSingleton(config);
-        //     // var options = Options.Create(config);
-        //     // services.AddSingleton(options);
-        // }
-
         services.Configure<MinimatrConfiguration>(
             config => {
                 configure(config);
@@ -35,18 +30,17 @@ public static class ServiceCollectionExtension {
         return AddMinimatrParsers(services, configureParsers);
     }
 
+    /// <summary>
+    /// Add MinimatR to a service collection.
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="assembly">Assembly to scan</param>
+    /// <param name="configure">Configure MinimatR options</param>
+    /// <param name="configureParsers">Register additional parser for custom type</param>
+    /// <returns></returns>
     public static IServiceCollection AddMinimatr(this IServiceCollection services, Assembly assembly,
         Action<MinimatrConfiguration>? configure = null,
         Action<ObjectParserCollection>? configureParsers = null) {
-        // if (services.FirstOrDefault(d => d.ServiceType == typeof(MinimatrConfiguration))?.ImplementationInstance is not MinimatrConfiguration config) {
-        //     config = new MinimatrConfiguration();
-        //     // services.Configure(configure);
-        //     services.AddSingleton(config);
-        //     // var options = Options.Create(config);
-        //     // services.AddSingleton(options);
-        // }
-
-        // config.Assembly ??= assembly;
         services.Configure<MinimatrConfiguration>(
             configuration => {
                 configuration.Assembly ??= assembly;
@@ -69,7 +63,4 @@ public static class ServiceCollectionExtension {
         ModelBinder.AddDefaultParsers(parserCollection);
         return services;
     }
-    // public static IServiceCollection AddParser(this IServiceCollection services, Type type, Func<string, T> configure) {
-    //     return services;
-    // }
 }

@@ -17,7 +17,6 @@ using Minimatr.Internal;
 using Minimatr.ModelBinding;
 using FromBodyAttribute = Minimatr.ModelBinding.FromBodyAttribute;
 using FromFormAttribute = Minimatr.ModelBinding.FromFormAttribute;
-using FromQueryAttribute = Minimatr.ModelBinding.FromQueryAttribute;
 using FromRouteAttribute = Minimatr.ModelBinding.FromRouteAttribute;
 
 namespace Minimatr.OpenApi;
