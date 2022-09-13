@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Tests", "Minimatr.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Extensions.Microsoft.DependencyInjection", "Minimatr.Extensions.Microsoft.DependencyInjection\Minimatr.Extensions.Microsoft.DependencyInjection.csproj", "{28D9DAD4-40EC-4B6E-803A-F81660FA815F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.Extensions.Logging", "Minimatr.Extensions.Logging\Minimatr.Extensions.Logging.csproj", "{DC943783-6F8C-4DD5-8E48-87139E1DE7D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimatr.AllInOne", "Minimatr.AllInOne\Minimatr.AllInOne.csproj", "{BDF79B41-9DBC-4EDF-82CA-B881A8B82F0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D9DAD4-40EC-4B6E-803A-F81660FA815F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC943783-6F8C-4DD5-8E48-87139E1DE7D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC943783-6F8C-4DD5-8E48-87139E1DE7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC943783-6F8C-4DD5-8E48-87139E1DE7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC943783-6F8C-4DD5-8E48-87139E1DE7D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF79B41-9DBC-4EDF-82CA-B881A8B82F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF79B41-9DBC-4EDF-82CA-B881A8B82F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF79B41-9DBC-4EDF-82CA-B881A8B82F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF79B41-9DBC-4EDF-82CA-B881A8B82F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
