@@ -226,7 +226,8 @@ public sealed class OpenApiGenerator {
                         case BindingSource.Query:
                             queryParameters.Add(
                                 new OpenApiParameter {
-                                    Name = bind.Name ?? propertyInfo.Name, In = ParameterLocation.Query,
+                                    Name = bind.Name ?? ToCamelCase(propertyInfo.Name),
+                                    In = ParameterLocation.Query,
                                     Description = GetSummary(propertyInfo),
                                     AllowEmptyValue = true,
                                     Example = new OpenApiString(GetExample(propertyInfo))
@@ -236,7 +237,8 @@ public sealed class OpenApiGenerator {
                         case BindingSource.Route:
                             routeParameters.Add(
                                 new OpenApiParameter {
-                                    Name = bind.Name ?? propertyInfo.Name, In = ParameterLocation.Path,
+                                    Name = bind.Name ?? propertyInfo.Name,
+                                    In = ParameterLocation.Path,
                                     Required = true,
                                     Description = GetSummary(propertyInfo),
                                     AllowEmptyValue = false,

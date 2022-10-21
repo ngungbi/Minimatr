@@ -21,8 +21,8 @@ internal abstract class ObjectSetter {
 
     public abstract void SetValue(object obj, StringValues value);
 
-    protected static void ThrowInvalidCast(StringValues value, Type type)
-        => throw new InvalidCastException($"Unable to convert '{value}' to '{type.FullName}' type");
+    protected static void ThrowInvalidBinding(StringValues value, Type type)
+        => throw new RequestBindingException($"Unable to convert '{value}' to '{type.FullName}' type");
 }
 
 // internal delegate T ObjectParserDelegate<out T>(StringValues input);
@@ -56,7 +56,7 @@ internal sealed class EnumSetter : ObjectSetter {
     public override void SetValue(object obj, StringValues value) {
         if (value.Count == 0) return;
         if (Enum.TryParse(_type, value[0], true, out var result)) Setter(obj, result); // PropertyInfo.SetValue(obj, result);
-        ThrowInvalidCast(value, _type);
+        ThrowInvalidBinding(value, _type);
     }
 }
 
@@ -71,7 +71,7 @@ internal sealed class ObjectSetter<T> : ObjectSetter {
         if (value.Count == 0) return;
         var rawValue = value[0];
         var success = _parser(rawValue, out var result);
-        if (!success) ThrowInvalidCast(value, typeof(T));
+        if (!success) ThrowInvalidBinding(value, typeof(T));
         // SetMethodInfo.Invoke(obj, new object?[] {result});
         Setter(obj, result);
     }

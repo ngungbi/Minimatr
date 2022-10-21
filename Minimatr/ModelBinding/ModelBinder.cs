@@ -9,7 +9,7 @@ using Minimatr.Internal;
 
 namespace Minimatr.ModelBinding;
 
-internal sealed class ParameterDictionary : TypeObjectDictionary<RequestParameter> { }
+internal sealed class ParameterDictionary : TypeObjectDictionary<RequestParameter?> { }
 
 public static class ModelBinder {
     private static readonly ParameterDictionary ParameterCache = new();
@@ -21,29 +21,22 @@ public static class ModelBinder {
             : null;
     }
 
-
-    // internal static async Task<T> BindToTargetAsync<T>(this HttpContext context, T target) where T : IEndpointRequest {
-    //     return (T) await BindToAsync(context, typeof(T), target);
-    // }
-
     internal static async Task<T> BindToAsync<T>(this HttpContext context) where T : IEndpointRequest {
         return (T) await BindToAsync(context, typeof(T));
     }
 
-    internal static Task<object> BindToAsync(this HttpContext context, Type type) {
+    internal static ValueTask<object> BindToAsync(this HttpContext context, Type type) {
         var target = Activator.CreateInstance(type);
         if (target is null) throw new InvalidOperationException($"Failed to create instance of type {type.FullName}");
         return BindToAsync(context, type, target);
     }
 
-    internal static async Task<object> BindToAsync(this HttpContext context, Type type, object target) {
-        if (!ParameterCache.TryGetValue(type, out var parameters)) {
-            Build(type, context, context.RequestServices.GetService<ObjectParserCollection>());
-            parameters = ParameterCache[type];
+    internal static async ValueTask<object> BindToAsync(this HttpContext context, Type type, object target) {
+        if (!ParameterCache.TryGetValue(type, out var parameters) || parameters is null) {
+            parameters = Build(type, context, context.RequestServices.GetService<ObjectParserCollection>());
+            // parameters = ParameterCache[type]!;
         }
 
-        // var target = Activator.CreateInstance(type);
-        // if (target is null) throw new NullReferenceException($"Failed to create instance of type {type.FullName}");
         foreach (var property in parameters.Queries) {
             if (context.Request.Query.TryGetValue(property.Name, out var queryValue))
                 property.SetValue(target, queryValue);
@@ -65,7 +58,7 @@ public static class ModelBinder {
             // var jsonOptions = context.RequestServices.GetService<IOptions<JsonOptions>>();
             _jsonSerializerOptions ??= context.RequestServices.GetService<IOptions<JsonOptions>>()?.Value.SerializerOptions;
             foreach (var item in parameters.Bodies) {
-                var body = await context.Request.ReadFromJsonAsync(item.PropertyType, _jsonSerializerOptions);
+                var body = await context.Request.ReadFromJsonAsync(item.PropertyType, _jsonSerializerOptions).ConfigureAwait(false);
                 item.SetValue(target, body);
             }
             // context.Request.Form.Files
@@ -114,18 +107,19 @@ public static class ModelBinder {
     // internal static void Build<T>(ObjectParserCollection? parsers = null) => Build(typeof(T), parsers);
     // internal static void Build(Type type, ObjectParserCollection? parsers = null) => Build(type, null, parsers);
 
-    internal static void Build(Type type, HttpContext context, ObjectParserCollection? parsers = null) {
+    internal static RequestParameter Build(Type type, HttpContext context, ObjectParserCollection? parsers = null) {
         Debug.Assert(parsers != null);
         Debug.Assert(context != null);
         var parameters = new RequestParameter();
         var properties = type.GetProperties();
         var endpoint = context.GetEndpoint() as RouteEndpoint;
+
         var config = context.RequestServices.GetRequiredService<IOptions<MinimatrConfiguration>>().Value;
         foreach (var property in properties) {
             var bind = property.GetCustomAttribute<BindFromAttribute>();
             if (bind is null) {
                 if (!config.EnableInferredBinding) continue;
-                bind = GetInferredBinding(property, endpoint?.RoutePattern!);
+                bind = GetInferredBinding(property, endpoint!.RoutePattern);
             } else if (bind.Source == BindingSource.None) {
                 continue;
             }
@@ -179,7 +173,13 @@ public static class ModelBinder {
             }
         }
 
-        ParameterCache.Add(type, parameters);
+        ParameterCache[type] = parameters;
+        return parameters;
+        // ParameterCache.Add(type, parameters);
+    }
+
+    public static void ReserveSpace(Type type) {
+        ParameterCache[type] = null;
     }
 
     private static bool IsHttpContext(PropertyInfo property, RequestParameter parameters) {

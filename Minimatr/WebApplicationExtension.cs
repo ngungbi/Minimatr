@@ -39,32 +39,51 @@ public static class WebApplicationExtension {
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     public static WebApplication MapAllRequests(this WebApplication app, Assembly? assembly = null) {
+        // var config = app.Services.GetRequiredService<IOptions<MinimatrConfiguration>>().Value;
+        // assembly ??= config.Assembly;
+        // if (assembly is null) {
+        //     throw new NullReferenceException(nameof(assembly));
+        // }
+        //
+        // var types = new List<Type>();
+        //
+        // foreach (var type in assembly.GetTypes()) {
+        //     var maps = type.GetCustomAttributes<MapMethodAttribute>();
+        //     if (!maps.Any()) continue;
+        //     // foreach (var _ in maps) {
+        //     if (type.GetInterfaces().Any(item => item == typeof(IEndpointRequest) || item == typeof(IRequest<object>))) {
+        //         types.Add(type);
+        //     }
+        //     // }
+        // }
+
+        // var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
+        foreach (var type in GetTypes(app, assembly)) {
+            // ModelBinder.Build(type);
+            MapRequest(app, type);
+            ModelBinder.ReserveSpace(type);
+        }
+
+
+        return app;
+    }
+
+    private static IEnumerable<Type> GetTypes(IHost app, Assembly? assembly = null) {
         var config = app.Services.GetRequiredService<IOptions<MinimatrConfiguration>>().Value;
         assembly ??= config.Assembly;
         if (assembly is null) {
             throw new NullReferenceException(nameof(assembly));
         }
 
-        var types = new List<Type>();
-
         foreach (var type in assembly.GetTypes()) {
             var maps = type.GetCustomAttributes<MapMethodAttribute>();
             if (!maps.Any()) continue;
             // foreach (var _ in maps) {
             if (type.GetInterfaces().Any(item => item == typeof(IEndpointRequest) || item == typeof(IRequest<object>))) {
-                types.Add(type);
+                yield return type;
             }
             // }
         }
-
-        // var types = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IEndpointRequest)));
-        foreach (var type in types) {
-            // ModelBinder.Build(type);
-            MapRequest(app, type);
-        }
-
-
-        return app;
     }
 
     public static WebApplication MapGet<TRequest>(this WebApplication app, string pattern)
